@@ -24,6 +24,7 @@ const overlay = document.querySelector("[data-overlay]");
 
 // modal variable
 const modalImg = document.querySelector("[data-modal-img]");
+// const quoteIcon = document.querySelector("[data-quote_icon]");
 const modalTitle = document.querySelector("[data-modal-title]");
 const modalText = document.querySelector("[data-modal-text]");
 
@@ -33,6 +34,7 @@ const testimonialsModalFunc = function () {
   overlay.classList.toggle("active");
 }
 
+
 // add click event to all modal items
 for (let i = 0; i < testimonialsItem.length; i++) {
 
@@ -40,6 +42,8 @@ for (let i = 0; i < testimonialsItem.length; i++) {
 
     modalImg.src = this.querySelector("[data-testimonials-avatar]").src;
     modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
+    // quoteIcon.src = this.querySelector("[data-testimonials-quote_icon]").src;
+    // quoteIcon.alt = this.querySelector("[data-testimonials-quote_icon]").alt;
     modalTitle.innerHTML = this.querySelector("[data-testimonials-title]").innerHTML;
     modalText.innerHTML = this.querySelector("[data-testimonials-text]").innerHTML;
 
