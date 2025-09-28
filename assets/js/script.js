@@ -261,29 +261,36 @@ function extractMediaFromProject(projectItem) {
 // Attach click listeners to portfolio items
 const projectItems = document.querySelectorAll(".projects .project-item");
 projectItems.forEach(item => {
-  item.addEventListener("click", (ev) => {
-    // prevent following any nested <a>
+  const trigger = item.querySelector("[data-portfolio-trigger]");
+  if (!trigger) return;
+
+  const activateProject = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
 
+    const link = item.dataset.projectLink;
+    if (link) {
+      window.open(link, "_blank", "noopener");
+    }
+
+    const media = extractMediaFromProject(item);
+    if (media.length === 0) return;
+
     const titleEl = item.querySelector(".project-title");
-    const descEl = item.querySelector(".project-desc"); // optional: user may add .project-desc hidden in HTML
+    const descEl = item.querySelector(".project-desc");
     const title = titleEl ? titleEl.textContent.trim() : "Project";
     const desc = descEl ? descEl.innerHTML : "";
 
-    const media = extractMediaFromProject(item);
     renderPortfolioGallery(title, desc, media);
     togglePortfolioModal();
-  });
+  };
 
-  // Also cancel anchor default if any
-  const a = item.querySelector("a");
-  if (a) {
-    a.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-    });
-  }
+  trigger.addEventListener("click", activateProject);
+  trigger.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" || ev.key === " ") {
+      activateProject(ev);
+    }
+  });
 });
 
 // Close handlers
