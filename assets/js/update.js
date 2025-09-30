@@ -593,14 +593,41 @@
     document.dispatchEvent(new CustomEvent("site-data-updated", { detail: { xml: xmlDoc } }));
   };
 
-  const loadData = () => {
-    fetch(DATA_URL, { cache: "no-cache" })
+  const fetchXmlText = () => {
+    if (window.location.protocol === "file:") {
+      return new Promise((resolve, reject) => {
+        try {
+          const xhr = new XMLHttpRequest();
+          xhr.overrideMimeType("application/xml");
+          xhr.open("GET", DATA_URL, true);
+          xhr.onload = () => {
+            if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300)) {
+              resolve(xhr.responseText);
+            } else {
+              reject(new Error(`Failed to fetch ${DATA_URL}: status ${xhr.status}`));
+            }
+          };
+          xhr.onerror = () => {
+            reject(new Error(`Network error while fetching ${DATA_URL}`));
+          };
+          xhr.send(null);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+
+    return fetch(DATA_URL, { cache: "no-cache" })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Failed to fetch ${DATA_URL}: ${response.status}`);
         }
         return response.text();
-      })
+      });
+  };
+
+  const loadData = () => {
+    fetchXmlText()
       .then(parseXml)
       .then(applyAll)
       .catch(err => {
