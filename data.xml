@@ -161,16 +161,36 @@
       <project index="2" category="computer vision">
         <title>C# ONNX Runtime Inference Pipeline</title>
         <thumbnail src="./assets/images/placeholders/no-image-3x4.svg" alt="C# ONNX Runtime Inference Pipeline" />
+        <item index="1">
+          <video src="./assets/images/Robotic.mp4" alt="Control Robotic" />
+        </item>
+        <item index="2">
+          <video src="./assets/images/Robotic2.mp4" alt="Control Robotic2" />
         <description><![CDATA[<p>Optimized ONNX Runtime integration in C# for real-time defect detection and model lifecycle automation.</p>]]></description>
       </project>
       <project index="3" category="nlp">
         <title>Multilingual Docs Chatbot (LangChain, RAG)</title>
         <thumbnail src="./assets/images/RAG.jpeg" alt="Multilingual Docs Chatbot (LangChain)" />
+        <item index="1">
+          <image src="./assets/images/RAG.jpeg" alt="RAG" />
+        </item>
+        <item index="2">
+          <image src="./assets/images/PDFGPT.jpg" alt="PDFGPT" />
+        </item>
         <description><![CDATA[<p>Retrieval-augmented QA system leveraging LangChain for multilingual corporate documents.</p>]]></description>
       </project>
       <project index="4" category="machine learning &amp; deep learning">
         <title>Lung Tumor Detection &amp; 3D Reconstruction</title>
         <thumbnail src="./assets/images/LungProject.jpg" alt="Lung Tumor Detection &amp; 3D Reconstruction" />
+        <item index="1">
+          <image src="./assets/images/LungProject.jpg" alt="application1" />
+        </item>
+        <item index="2">
+          <image src="./assets/images/LungCancer2.jpg" alt="application2" />
+        </item>
+        <item index="3">
+          <image src="./assets/images/LungCancer3.jpg" alt="application3" />
+        </item>
         <description><![CDATA[<p>Deep-learning-assisted tumor detection, segmentation, and 3D reconstruction for surgical planning.</p>]]></description>
       </project>
       <project index="5" category="computer vision" link="https://www.instagram.com/p/C0ZKdhdJcqmDK1S-SfBaZJtq2EQvOQGELWf85A0/">
@@ -183,6 +203,32 @@
         <thumbnail src="./assets/images/AR2.jpg" alt="Augmented Reality (AR)" />
         <description><![CDATA[<p>Advanced AR prototype with animated overlays and real-world occlusion handling.</p>]]></description>
       </project>
+      <project index="7" category="computer vision">
+        <title>Omniverse Visualize</title>
+        <thumbnail src="./assets/images/Omniverse.png" alt="Omniverse" />
+        <description><![CDATA[<p>Create the Visualize Board in Omniverse and Error. Make the dataset</p>]]></description>
+      </project>
+      <project index="8" category="computer vision">
+        <title>Label and Training Application</title>
+        <thumbnail src="./assets/images/LabelTrainingApp.png" alt="Label Training Application" />
+        </item index="1">
+          <image src="./assets/images/LabelTrainingApp.png" alt="Label Training Application" />
+        </item>
+        <item index="2">
+          <image src="./assets/images/LabelTrainingApp2.png" alt="Label Training Application" />
+        </item>
+        <description><![CDATA[<p>Create the application for the workers can label and training AI Model in Jetson.</p>]]></description>
+      </project>
+      <project index="9" category="computer vision">
+        <title>Stopper Detection in C# ONNX Runtime </title>
+        <thumbnail src="./assets/images/stopperDetection" alt="Stopper Detection" />
+        <item index="1">
+          <image src="./assets/images/stopperDetection.png" alt="Stopper Detection" />
+        </item>
+        <item index="2">
+          <image src="./assets/images/stopperDetection2.png" alt="Stopper Detection2" />
+        </item>
+        <description><![CDATA[<p>Yolo Detection, apply for stopper detecttion in C# Onnx.</p>]]></description>
     </projects>
   </portfolio>
   <contact>
