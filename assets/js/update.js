@@ -2,6 +2,86 @@
   const DATA_URL = "./data.xml";
   const PLACEHOLDER_IMAGE = "./assets/images/placeholders/no-image-3x4.svg";
 
+  const ensureDebugPanel = () => {
+    if (typeof document === "undefined") return null;
+    let panel = document.querySelector("[data-debug-panel]");
+    if (panel) return panel;
+
+    const body = document.body;
+    if (!body) return null;
+
+    panel = document.createElement("details");
+    panel.dataset.debugPanel = "site-data";
+    panel.style.position = "fixed";
+    panel.style.bottom = "16px";
+    panel.style.right = "16px";
+    panel.style.maxWidth = "420px";
+    panel.style.zIndex = "9999";
+    panel.style.background = "rgba(20, 20, 20, 0.95)";
+    panel.style.color = "#ffffff";
+    panel.style.border = "1px solid #ff6b6b";
+    panel.style.borderRadius = "8px";
+    panel.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.35)";
+    panel.style.padding = "12px";
+    panel.style.fontFamily = "'Fira Code', 'Courier New', monospace";
+    panel.style.fontSize = "12px";
+
+    const summary = document.createElement("summary");
+    summary.textContent = "data.xml error";
+    summary.style.cursor = "pointer";
+    summary.style.fontWeight = "600";
+    panel.appendChild(summary);
+
+    const pre = document.createElement("pre");
+    pre.dataset.debugOutput = "true";
+    pre.style.whiteSpace = "pre-wrap";
+    pre.style.wordBreak = "break-word";
+    pre.style.margin = "8px 0 0";
+    pre.style.lineHeight = "1.4";
+    panel.appendChild(pre);
+
+    body.appendChild(panel);
+    return panel;
+  };
+
+  const clearDebugPanel = () => {
+    const panel = document.querySelector("[data-debug-panel]");
+    if (panel && panel.parentNode) {
+      panel.parentNode.removeChild(panel);
+    }
+  };
+
+  const debugDataError = (stage, error, payload) => {
+    const description = (stage || "Unknown stage").trim();
+    const message = error && error.message ? error.message : String(error || "Unknown error");
+    console.groupCollapsed(`[data.xml] ${description}`);
+    console.error(message);
+    if (error && error.stack) {
+      console.error(error.stack);
+    }
+    if (payload) {
+      const excerpt = typeof payload === "string" ? payload.slice(0, 4000) : JSON.stringify(payload, null, 2);
+      console.info("Payload excerpt:", excerpt);
+    }
+    console.groupEnd();
+
+    const panel = ensureDebugPanel();
+    if (!panel) return;
+    panel.open = true;
+    const output = panel.querySelector("[data-debug-output]");
+    if (!output) return;
+
+    const timestamp = new Date().toISOString();
+    let body = `[${timestamp}] Stage: ${description}\nMessage: ${message}`;
+    if (error && error.stack) {
+      body += `\nStack:\n${error.stack}`;
+    }
+    if (payload) {
+      body += `\n\nPayload snippet:\n${typeof payload === "string" ? payload.slice(0, 4000) : JSON.stringify(payload, null, 2)}`;
+    }
+    output.textContent = body;
+  };
+
   const parseXml = (xmlText) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlText, "application/xml");
@@ -23,7 +103,24 @@
     if (!node) return fallback;
     const target = selector ? node.querySelector(selector) : node;
     if (!target) return fallback;
-    return (target.innerHTML || "").trim();
+    if (typeof target.innerHTML === "string" && target.innerHTML.trim()) {
+      return target.innerHTML.trim();
+    }
+
+    const serializer = new XMLSerializer();
+    const html = Array.from(target.childNodes || []).map(child => {
+      if (child.nodeType === 3 || child.nodeType === 4) {
+        return child.nodeValue;
+      }
+      try {
+        return serializer.serializeToString(child);
+      } catch (error) {
+        debugDataError("Serializing XML node", error);
+        return "";
+      }
+    }).join("").trim();
+
+    return html || fallback;
   };
 
   const setText = (element, value) => {
@@ -628,10 +725,17 @@
 
   const loadData = () => {
     fetchXmlText()
-      .then(parseXml)
-      .then(applyAll)
+      .then(xmlText => {
+        try {
+          const xmlDoc = parseXml(xmlText);
+          applyAll(xmlDoc);
+          clearDebugPanel();
+        } catch (error) {
+          debugDataError("Parsing data.xml", error, xmlText);
+        }
+      })
       .catch(err => {
-        console.error("Unable to load site data", err);
+        debugDataError("Fetching data.xml", err);
       });
   };
 
