@@ -1,0 +1,11 @@
+{
+  "name": "introduce_myself",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:portfolio": "node tests/portfolio-review.js"
+  },
+  "devDependencies": {
+    "jsdom": "^22.1.0"
+  }
+}

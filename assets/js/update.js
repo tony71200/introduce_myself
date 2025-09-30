@@ -8,13 +8,14 @@
       return value;
     }
   };
-  const baseForUrl = scriptTag?.src || window.location.href;
+  const pageUrl = window.location.href;
+  const scriptSrc = scriptTag?.src || "";
   const declaredUrl = scriptTag?.getAttribute("data-json-url");
   let DATA_URL = declaredUrl
-    ? resolveUrl(declaredUrl, baseForUrl)
-    : scriptTag
-    ? resolveUrl("../../data.json", baseForUrl)
-    : resolveUrl("./data.json", window.location.href);
+    ? resolveUrl(declaredUrl, pageUrl)
+    : scriptSrc
+    ? resolveUrl("../../data.json", scriptSrc)
+    : resolveUrl("./data.json", pageUrl);
 
   const templateCache = new Map();
   const ensureTemplate = (selector) => {
