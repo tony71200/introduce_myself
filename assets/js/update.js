@@ -1,5 +1,6 @@
 (function () {
   const DATA_URL = "./data.xml";
+  const PLACEHOLDER_IMAGE = "./assets/images/placeholders/no-image-3x4.svg";
 
   const parseXml = (xmlText) => {
     const parser = new DOMParser();
@@ -16,6 +17,13 @@
     const target = selector ? node.querySelector(selector) : node;
     if (!target) return fallback;
     return (target.textContent || "").trim();
+  };
+
+  const getHTMLContent = (node, selector, fallback = "") => {
+    if (!node) return fallback;
+    const target = selector ? node.querySelector(selector) : node;
+    if (!target) return fallback;
+    return (target.innerHTML || "").trim();
   };
 
   const setText = (element, value) => {
@@ -167,92 +175,373 @@
   };
 
   const applyResume = (doc) => {
-    doc.querySelectorAll("resume > experiences > item").forEach(itemNode => {
-      const index = itemNode.getAttribute("index");
-      const li = document.querySelector(`[data-experience-index="${index}"]`);
-      if (!li) return;
-      setText(li.querySelector("[data-experience-company]"), getText(itemNode, "company"));
-      setText(li.querySelector("[data-experience-role]"), getText(itemNode, "role"));
-      setText(li.querySelector("[data-experience-dates]"), getText(itemNode, "dates"));
-      setHTML(li.querySelector("[data-experience-summary]"), getText(itemNode, "summary"));
-    });
+    const experiencesContainer = document.querySelector("[data-resume-experiences]");
+    if (experiencesContainer) {
+      experiencesContainer.innerHTML = "";
+      const experiences = doc.querySelectorAll("resume > experiences > item");
+      if (!experiences.length) {
+        const empty = document.createElement("li");
+        empty.className = "timeline-item";
+        empty.textContent = "No experiences available.";
+        experiencesContainer.appendChild(empty);
+      } else {
+        experiences.forEach(itemNode => {
+          const li = document.createElement("li");
+          li.className = "timeline-item";
 
-    doc.querySelectorAll("resume > education > item").forEach(itemNode => {
-      const index = itemNode.getAttribute("index");
-      const li = document.querySelector(`[data-education-index="${index}"]`);
-      if (!li) return;
-      setText(li.querySelector("[data-education-school]"), getText(itemNode, "school"));
-      setText(li.querySelector("[data-education-dates]"), getText(itemNode, "dates"));
-      setHTML(li.querySelector("[data-education-summary]"), getText(itemNode, "summary"));
-    });
+          const companyEl = document.createElement("h4");
+          companyEl.className = "h4";
+          companyEl.textContent = getText(itemNode, "company");
+          li.appendChild(companyEl);
+
+          const roleEl = document.createElement("h5");
+          roleEl.className = "h5 timeline-item-title";
+          roleEl.textContent = getText(itemNode, "role");
+          li.appendChild(roleEl);
+
+          const datesEl = document.createElement("span");
+          datesEl.textContent = getText(itemNode, "dates");
+          li.appendChild(datesEl);
+
+          const summaryEl = document.createElement("p");
+          summaryEl.className = "timeline-text";
+          summaryEl.innerHTML = getHTMLContent(itemNode, "summary");
+          li.appendChild(summaryEl);
+
+          experiencesContainer.appendChild(li);
+        });
+      }
+    }
+
+    const educationContainer = document.querySelector("[data-resume-education]");
+    if (educationContainer) {
+      educationContainer.innerHTML = "";
+      const educationItems = doc.querySelectorAll("resume > education > item");
+      if (!educationItems.length) {
+        const empty = document.createElement("li");
+        empty.className = "timeline-item";
+        empty.textContent = "No education records available.";
+        educationContainer.appendChild(empty);
+      } else {
+        educationItems.forEach(itemNode => {
+          const li = document.createElement("li");
+          li.className = "timeline-item";
+
+          const schoolEl = document.createElement("h4");
+          schoolEl.className = "h4";
+          schoolEl.textContent = getText(itemNode, "school");
+          li.appendChild(schoolEl);
+
+          const datesEl = document.createElement("span");
+          datesEl.textContent = getText(itemNode, "dates");
+          li.appendChild(datesEl);
+
+          const summaryEl = document.createElement("p");
+          summaryEl.className = "timeline-text";
+          summaryEl.innerHTML = getHTMLContent(itemNode, "summary");
+          li.appendChild(summaryEl);
+
+          educationContainer.appendChild(li);
+        });
+      }
+    }
   };
 
   const applyPublications = (doc) => {
-    const yearNode = doc.querySelector("publications > year");
-    if (!yearNode) return;
-    const yearValue = yearNode.getAttribute("value") || yearNode.textContent || "";
-    const yearEl = document.querySelector("[data-publication-year]");
-    setText(yearEl, (yearValue || "").trim());
+    const wrapper = document.querySelector("[data-publications-wrapper]");
+    if (!wrapper) return;
+    wrapper.innerHTML = "";
 
-    yearNode.querySelectorAll("publication").forEach(pub => {
-      const index = pub.getAttribute("index");
-      const wrapper = document.querySelector(`[data-publication-index="${index}"]`);
-      if (!wrapper) return;
-      const titleEl = wrapper.querySelector("[data-publication-title]");
-      const linkEl = wrapper.querySelector("[data-publication-link]");
-      const authorsEl = wrapper.querySelector("[data-publication-authors]");
-      const venueEl = wrapper.querySelector("[data-publication-venue]");
-      const summaryEl = wrapper.querySelector("[data-publication-summary]");
-      const titleText = getText(pub, "title");
-      if (titleEl) setText(titleEl, titleText);
-      if (linkEl) {
-        const link = getText(pub, "link");
-        if (link) linkEl.setAttribute("href", link);
-        linkEl.textContent = titleText || link || linkEl.textContent;
+    const yearNodes = doc.querySelectorAll("publications > year");
+    if (!yearNodes.length) {
+      const empty = document.createElement("p");
+      empty.className = "timeline-empty";
+      empty.textContent = "No publications available.";
+      wrapper.appendChild(empty);
+      return;
+    }
+
+    yearNodes.forEach(yearNode => {
+      const yearValue = (yearNode.getAttribute("value") || yearNode.textContent || "").trim();
+
+      const section = document.createElement("section");
+      section.className = "timeline";
+
+      const titleWrapper = document.createElement("div");
+      titleWrapper.className = "title-wrapper";
+      const iconBox = document.createElement("div");
+      iconBox.className = "icon-box";
+      const icon = document.createElement("ion-icon");
+      icon.setAttribute("name", "book-outline");
+      iconBox.appendChild(icon);
+      const yearHeading = document.createElement("h3");
+      yearHeading.className = "h3";
+      yearHeading.textContent = yearValue;
+      titleWrapper.appendChild(iconBox);
+      titleWrapper.appendChild(yearHeading);
+      section.appendChild(titleWrapper);
+
+      const list = document.createElement("ol");
+      list.className = "timeline-list";
+
+      const publications = yearNode.querySelectorAll("publication");
+      if (!publications.length) {
+        const emptyItem = document.createElement("li");
+        emptyItem.className = "timeline-item";
+        emptyItem.textContent = "No publications recorded.";
+        list.appendChild(emptyItem);
+      } else {
+        publications.forEach(pub => {
+          const li = document.createElement("li");
+          li.className = "timeline-item";
+          li.style.marginBottom = "20px";
+
+          const h4 = document.createElement("h4");
+          h4.className = "h4";
+          h4.style.margin = "0";
+          const titleText = getText(pub, "title");
+          const link = getText(pub, "link");
+          if (link) {
+            const anchor = document.createElement("a");
+            anchor.setAttribute("href", link);
+            anchor.setAttribute("target", "_blank");
+            anchor.setAttribute("rel", "noopener");
+            anchor.style.color = "#ffffff";
+            anchor.style.textDecoration = "none";
+            anchor.textContent = titleText || link;
+            h4.appendChild(anchor);
+          } else {
+            h4.textContent = titleText;
+          }
+          li.appendChild(h4);
+
+          const authors = document.createElement("h5");
+          authors.className = "h5 timeline-item-title";
+          authors.style.margin = "5px 0";
+          authors.style.color = "#cccccc";
+          authors.innerHTML = getHTMLContent(pub, "authors");
+          li.appendChild(authors);
+
+          const venue = document.createElement("span");
+          venue.textContent = getText(pub, "venue");
+          li.appendChild(venue);
+
+          const summary = document.createElement("p");
+          summary.className = "timeline-text";
+          summary.style.marginTop = "6px";
+          summary.textContent = getText(pub, "summary");
+          li.appendChild(summary);
+
+          list.appendChild(li);
+        });
       }
-      setHTML(authorsEl, getText(pub, "authors"));
-      setText(venueEl, getText(pub, "venue"));
-      setText(summaryEl, getText(pub, "summary"));
+
+      section.appendChild(list);
+      wrapper.appendChild(section);
+    });
+  };
+
+  const buildGalleryFromNodes = (galleryKey, nodes) => {
+    const root = document.querySelector(`[data-gallery="${galleryKey}"]`);
+    if (!root) return;
+
+    const filterList = root.querySelector("[data-gallery-filter-list]");
+    const selectList = root.querySelector("[data-gallery-select-list]");
+    const selectValue = root.querySelector("[data-gallery-select-value]");
+    const itemsList = root.querySelector("[data-gallery-items]");
+
+    if (!itemsList) return;
+
+    if (filterList) filterList.innerHTML = "";
+    if (selectList) selectList.innerHTML = "";
+    itemsList.innerHTML = "";
+    if (selectValue) selectValue.textContent = "Select category";
+
+    const entries = Array.from(nodes || []).map(node => {
+      const title = getText(node, "title");
+      const description = getHTMLContent(node, "description");
+      const rawCategory = (node.getAttribute("category") || "General").trim();
+      const categoryDisplay = rawCategory ? rawCategory.replace(/&amp;/g, "&") : "General";
+      const categoryValue = (categoryDisplay || "General").toLowerCase();
+      const link = node.getAttribute("link") || "";
+
+      const media = [];
+      const thumbnailNode = node.querySelector("thumbnail");
+      if (thumbnailNode) {
+        const thumbSrc = (thumbnailNode.getAttribute("src") || "").trim();
+        if (thumbSrc) {
+          media.push({
+            type: "image",
+            src: thumbSrc,
+            alt: thumbnailNode.getAttribute("alt") || title || "gallery media"
+          });
+        }
+      }
+
+      node.querySelectorAll("item").forEach(itemNode => {
+        const child = itemNode.firstElementChild;
+        if (!child) return;
+        const src = (child.getAttribute("src") || "").trim();
+        if (!src) return;
+        const type = child.tagName.toLowerCase();
+        const alt = child.getAttribute("alt") || title || "gallery media";
+        const poster = child.getAttribute("poster");
+        const mediaEntry = {
+          type: type === "video" ? "video" : "image",
+          src,
+          alt
+        };
+        if (poster) mediaEntry.poster = poster;
+        media.push(mediaEntry);
+      });
+
+      const firstImage = media.find(item => item.type === "image");
+      const firstMedia = media[0];
+      let cardImage = PLACEHOLDER_IMAGE;
+      let cardAlt = title || "Project";
+      if (firstImage) {
+        cardImage = firstImage.src;
+        cardAlt = firstImage.alt || cardAlt;
+      } else if (firstMedia) {
+        cardImage = firstMedia.poster || firstMedia.src || PLACEHOLDER_IMAGE;
+        cardAlt = firstMedia.alt || cardAlt;
+      }
+
+      return {
+        title,
+        description,
+        categoryDisplay: categoryDisplay || "General",
+        categoryValue: categoryValue || "general",
+        link,
+        media,
+        cardImage,
+        cardAlt
+      };
+    }).filter(entry => {
+      return entry && (entry.title || entry.description || entry.media.length);
+    });
+
+    if (!entries.length) {
+      const empty = document.createElement("li");
+      empty.className = "project-item empty";
+      empty.textContent = "No items available.";
+      itemsList.appendChild(empty);
+      return;
+    }
+
+    const categories = [];
+    entries.forEach(entry => {
+      const value = entry.categoryValue || "general";
+      if (!categories.some(cat => cat[0] === value)) {
+        categories.push([value, entry.categoryDisplay || "General"]);
+      }
+    });
+
+    const categoryPairs = [["all", "All"]];
+    categories.forEach(([value, label]) => {
+      if (!categoryPairs.some(cat => cat[0] === value)) {
+        categoryPairs.push([value, label || "General"]);
+      }
+    });
+
+    if (filterList) {
+      categoryPairs.forEach(([value, label], index) => {
+        const li = document.createElement("li");
+        li.className = "filter-item";
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = label;
+        btn.setAttribute("data-gallery-filter-btn", "");
+        btn.dataset.filterValue = value;
+        if (index === 0) btn.classList.add("active");
+        li.appendChild(btn);
+        filterList.appendChild(li);
+      });
+    }
+
+    if (selectList) {
+      categoryPairs.forEach(([value, label]) => {
+        const li = document.createElement("li");
+        li.className = "select-item";
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = label;
+        btn.setAttribute("data-gallery-select-item", "");
+        btn.dataset.selectValue = value;
+        li.appendChild(btn);
+        selectList.appendChild(li);
+      });
+    }
+
+    if (selectValue && categoryPairs.length) {
+      selectValue.textContent = categoryPairs[0][1];
+    }
+
+    entries.forEach(entry => {
+      const li = document.createElement("li");
+      li.className = "project-item active";
+      li.setAttribute("data-gallery-item", "");
+      li.setAttribute("data-filter-item", "");
+      li.dataset.category = entry.categoryValue || "general";
+      li.dataset.media = JSON.stringify(entry.media || []);
+      if (entry.link) {
+        li.dataset.link = entry.link;
+      } else {
+        delete li.dataset.link;
+      }
+
+      const card = document.createElement("article");
+      card.className = "project-card";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("data-gallery-trigger", "");
+
+      const figure = document.createElement("figure");
+      figure.className = "project-img";
+      const iconBox = document.createElement("div");
+      iconBox.className = "project-item-icon-box";
+      const icon = document.createElement("ion-icon");
+      icon.setAttribute("name", "eye-outline");
+      iconBox.appendChild(icon);
+      figure.appendChild(iconBox);
+      const img = document.createElement("img");
+      img.setAttribute("loading", "lazy");
+      img.setAttribute("src", entry.cardImage || PLACEHOLDER_IMAGE);
+      img.setAttribute("alt", entry.cardAlt || entry.title || "Project image");
+      figure.appendChild(img);
+      card.appendChild(figure);
+
+      const titleEl = document.createElement("h3");
+      titleEl.className = "project-title";
+      titleEl.setAttribute("data-gallery-title", "");
+      titleEl.textContent = entry.title || "Untitled";
+      card.appendChild(titleEl);
+
+      const categoryEl = document.createElement("p");
+      categoryEl.className = "project-category";
+      categoryEl.textContent = entry.categoryDisplay || "General";
+      card.appendChild(categoryEl);
+
+      const descEl = document.createElement("div");
+      descEl.className = "project-desc";
+      descEl.setAttribute("data-gallery-description", "");
+      if (entry.description) {
+        descEl.innerHTML = entry.description;
+      }
+      descEl.hidden = true;
+      card.appendChild(descEl);
+
+      li.appendChild(card);
+      itemsList.appendChild(li);
     });
   };
 
   const applyPortfolio = (doc) => {
-    doc.querySelectorAll("portfolio > projects > project").forEach(project => {
-      const index = project.getAttribute("index");
-      const item = document.querySelector(`[data-project-index="${index}"]`);
-      if (!item) return;
-      const category = project.getAttribute("category");
-      if (category) {
-        item.dataset.category = category.toLowerCase();
-      }
-      const link = project.getAttribute("link");
-      if (typeof link === "string") {
-        if (link) {
-          item.dataset.projectLink = link;
-        } else {
-          delete item.dataset.projectLink;
-        }
-      }
-      const title = getText(project, "title");
-      setText(item.querySelector("[data-project-title]"), title);
-      const categoryEl = item.querySelector("[data-project-category]");
-      if (categoryEl) {
-        const existing = categoryEl.textContent || "";
-        const nextValue = category ? category.replace(/&amp;/g, "&") : existing;
-        setText(categoryEl, nextValue);
-      }
-      setHTML(item.querySelector("[data-project-description]"), getText(project, "description"));
-      const thumb = project.querySelector("thumbnail");
-      if (thumb) {
-        const img = item.querySelector("[data-project-image]");
-        if (img) {
-          const src = thumb.getAttribute("src");
-          const alt = thumb.getAttribute("alt");
-          if (src) img.setAttribute("src", src);
-          if (alt) img.setAttribute("alt", alt);
-        }
-      }
-    });
+    buildGalleryFromNodes("portfolio", doc.querySelectorAll("portfolio > projects > project"));
+  };
+
+  const applyCertificates = (doc) => {
+    buildGalleryFromNodes("certificates", doc.querySelectorAll("certificates > certificate"));
   };
 
   const applyContact = (doc) => {
@@ -298,9 +587,10 @@
     applyResume(xmlDoc);
     applyPublications(xmlDoc);
     applyPortfolio(xmlDoc);
+    applyCertificates(xmlDoc);
     applyContact(xmlDoc);
     applyFooter(xmlDoc);
-    document.dispatchEvent(new Event("site-data-updated"));
+    document.dispatchEvent(new CustomEvent("site-data-updated", { detail: { xml: xmlDoc } }));
   };
 
   const loadData = () => {

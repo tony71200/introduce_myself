@@ -166,6 +166,7 @@
         </item>
         <item index="2">
           <video src="./assets/images/Robotic2.mp4" alt="Control Robotic2" />
+        </item>
         <description><![CDATA[<p>Optimized ONNX Runtime integration in C# for real-time defect detection and model lifecycle automation.</p>]]></description>
       </project>
       <project index="3" category="nlp">
@@ -211,7 +212,7 @@
       <project index="8" category="computer vision">
         <title>Label and Training Application</title>
         <thumbnail src="./assets/images/LabelTrainingApp.png" alt="Label Training Application" />
-        </item index="1">
+        <item index="1">
           <image src="./assets/images/LabelTrainingApp.png" alt="Label Training Application" />
         </item>
         <item index="2">
@@ -221,16 +222,31 @@
       </project>
       <project index="9" category="computer vision">
         <title>Stopper Detection in C# ONNX Runtime </title>
-        <thumbnail src="./assets/images/stopperDetection" alt="Stopper Detection" />
+        <thumbnail src="./assets/images/stopperdetection.png" alt="Stopper Detection" />
         <item index="1">
-          <image src="./assets/images/stopperDetection.png" alt="Stopper Detection" />
+          <image src="./assets/images/stopperdetection.png" alt="Stopper Detection" />
         </item>
         <item index="2">
-          <image src="./assets/images/stopperDetection2.png" alt="Stopper Detection2" />
+          <image src="./assets/images/StopperDetection2.png" alt="Stopper Detection2" />
         </item>
         <description><![CDATA[<p>Yolo Detection, apply for stopper detecttion in C# Onnx.</p>]]></description>
     </projects>
   </portfolio>
+  <certificates>
+    <certificate index="1" category="professional development">
+      <title>Modern C++ Programming Essentials</title>
+      <thumbnail src="./assets/images/certificate_Cpp.jpg" alt="Modern C++ Programming Certificate" />
+      <item index="1">
+        <image src="./assets/images/certificate_Cpp.jpg" alt="Modern C++ Programming Certificate" />
+      </item>
+      <description><![CDATA[<p>Issued by Coursera · 2024 &mdash; focused on advanced C++ features, memory management, and best practices for production code.</p>]]></description>
+    </certificate>
+    <certificate index="2" category="workshop">
+      <title>AI Systems Workshop</title>
+      <thumbnail src="./assets/images/placeholders/no-image-3x4.svg" alt="AI Systems Workshop Certificate" />
+      <description><![CDATA[<p>Hands-on workshop covering prompt engineering, RAG pipelines, and deployment for applied AI systems.</p>]]></description>
+    </certificate>
+  </certificates>
   <contact>
     <map>
       <src>https://www.google.com/maps?q=22.992677,120.22829&amp;z=18&amp;output=embed</src>
