@@ -82,6 +82,24 @@
     output.textContent = body;
   };
 
+  const readEmbeddedXml = () => {
+    if (typeof document !== "undefined") {
+      const inline = document.querySelector("[data-site-data-inline]");
+      if (inline && inline.textContent && inline.textContent.trim()) {
+        return inline.textContent.trim();
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      const embedded = window.__SITE_DATA_XML__;
+      if (typeof embedded === "string" && embedded.trim()) {
+        return embedded.trim();
+      }
+    }
+
+    return null;
+  };
+
   const parseXml = (xmlText) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlText, "application/xml");
@@ -691,36 +709,52 @@
   };
 
   const fetchXmlText = () => {
-    if (window.location.protocol === "file:") {
-      return new Promise((resolve, reject) => {
-        try {
-          const xhr = new XMLHttpRequest();
-          xhr.overrideMimeType("application/xml");
-          xhr.open("GET", DATA_URL, true);
-          xhr.onload = () => {
-            if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300)) {
-              resolve(xhr.responseText);
-            } else {
-              reject(new Error(`Failed to fetch ${DATA_URL}: status ${xhr.status}`));
-            }
-          };
-          xhr.onerror = () => {
-            reject(new Error(`Network error while fetching ${DATA_URL}`));
-          };
-          xhr.send(null);
-        } catch (error) {
-          reject(error);
-        }
-      });
+    const embeddedXml = window.location.protocol === "file:" ? readEmbeddedXml() : null;
+    if (embeddedXml) {
+      return Promise.resolve(embeddedXml);
     }
 
-    return fetch(DATA_URL, { cache: "no-cache" })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${DATA_URL}: ${response.status}`);
-        }
-        return response.text();
-      });
+    const attemptNetworkFetch = () => {
+      if (window.location.protocol === "file:") {
+        return new Promise((resolve, reject) => {
+          try {
+            const xhr = new XMLHttpRequest();
+            xhr.overrideMimeType("application/xml");
+            xhr.open("GET", DATA_URL, true);
+            xhr.onload = () => {
+              if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300)) {
+                resolve(xhr.responseText);
+              } else {
+                reject(new Error(`Failed to fetch ${DATA_URL}: status ${xhr.status}`));
+              }
+            };
+            xhr.onerror = () => {
+              reject(new Error(`Network error while fetching ${DATA_URL}`));
+            };
+            xhr.send(null);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      }
+
+      return fetch(DATA_URL, { cache: "no-cache" })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch ${DATA_URL}: ${response.status}`);
+          }
+          return response.text();
+        });
+    };
+
+    return attemptNetworkFetch().catch(error => {
+      const fallbackXml = readEmbeddedXml();
+      if (fallbackXml) {
+        debugDataError("Fetching data.xml (falling back to embedded copy)", error);
+        return fallbackXml;
+      }
+      throw error;
+    });
   };
 
   const loadData = () => {
