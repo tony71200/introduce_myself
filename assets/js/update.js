@@ -1,5 +1,43 @@
 (function () {
-  const DATA_URL = "./data.json";
+  const scriptTag = document.currentScript || document.querySelector("script[data-json-url]");
+  const resolveUrl = (value, base) => {
+    if (!value) return "";
+    try {
+      return new URL(value, base).href;
+    } catch (error) {
+      return value;
+    }
+  };
+  const baseForUrl = scriptTag?.src || window.location.href;
+  const declaredUrl = scriptTag?.getAttribute("data-json-url");
+  let DATA_URL = declaredUrl
+    ? resolveUrl(declaredUrl, baseForUrl)
+    : scriptTag
+    ? resolveUrl("../../data.json", baseForUrl)
+    : resolveUrl("./data.json", window.location.href);
+
+  const templateCache = new Map();
+  const ensureTemplate = (selector) => {
+    if (!templateCache.has(selector)) {
+      const template = document.querySelector(selector);
+      if (!template || !template.content || !template.content.firstElementChild) {
+        templateCache.set(selector, null);
+      } else {
+        templateCache.set(selector, template.content.firstElementChild);
+      }
+    }
+    return templateCache.get(selector);
+  };
+  const getTemplateClone = (selector) => {
+    const root = ensureTemplate(selector);
+    return root ? root.cloneNode(true) : null;
+  };
+
+  const clearChildren = (node) => {
+    if (node) {
+      node.innerHTML = "";
+    }
+  };
 
   const coerceString = (value, fallback = "") => {
     if (value === null || value === undefined) return fallback;
@@ -128,29 +166,63 @@
     });
 
     const testimonials = Array.isArray(data?.about?.testimonials) ? data.about.testimonials : [];
-    testimonials.forEach(testimonial => {
-      const index = coerceString(testimonial.index);
-      const item = document.querySelector(`[data-testimonial-index="${index}"]`);
-      if (!item) return;
-      const name = coerceString(testimonial.name);
-      const quoteHtml = coerceString(testimonial.quoteHtml);
-      const avatarData = testimonial.avatar;
-      const titleEl = item.querySelector("[data-testimonials-title]");
-      const textEl = item.querySelector("[data-testimonials-text]");
-      setText(titleEl, name);
-      if (quoteHtml) {
-        setHTML(textEl, quoteHtml);
-      }
-      if (avatarData) {
-        const avatarEl = item.querySelector("[data-testimonials-avatar]");
-        if (avatarEl) {
-          const src = coerceString(avatarData.src);
-          const alt = coerceString(avatarData.alt);
-          if (src) avatarEl.setAttribute("src", src);
-          if (alt) avatarEl.setAttribute("alt", alt);
+    const testimonialsList = document.querySelector("[data-testimonials-list]");
+    if (testimonialsList && ensureTemplate("#testimonial-item-template")) {
+      clearChildren(testimonialsList);
+      testimonials.forEach((testimonial, idx) => {
+        const item = getTemplateClone("#testimonial-item-template");
+        if (!item) return;
+        const indexValue = coerceString(testimonial.index || idx + 1);
+        if (indexValue) {
+          item.dataset.testimonialIndex = indexValue;
         }
-      }
-    });
+        const card = item.querySelector("[data-testimonials-item]");
+        if (card && indexValue) {
+          card.dataset.testimonialIndex = indexValue;
+        }
+        const name = coerceString(testimonial.name);
+        const quoteHtml = coerceString(testimonial.quoteHtml);
+        const avatarData = testimonial.avatar;
+        const titleEl = item.querySelector("[data-testimonials-title]");
+        const textEl = item.querySelector("[data-testimonials-text]");
+        setText(titleEl, name);
+        setHTML(textEl, quoteHtml);
+        if (avatarData) {
+          const avatarEl = item.querySelector("[data-testimonials-avatar]");
+          if (avatarEl) {
+            const src = coerceString(avatarData.src);
+            const alt = coerceString(avatarData.alt);
+            if (src) avatarEl.setAttribute("src", src);
+            if (alt) avatarEl.setAttribute("alt", alt);
+          }
+        }
+        testimonialsList.appendChild(item);
+      });
+    } else {
+      testimonials.forEach(testimonial => {
+        const index = coerceString(testimonial.index);
+        const item = document.querySelector(`[data-testimonial-index="${index}"]`);
+        if (!item) return;
+        const name = coerceString(testimonial.name);
+        const quoteHtml = coerceString(testimonial.quoteHtml);
+        const avatarData = testimonial.avatar;
+        const titleEl = item.querySelector("[data-testimonials-title]");
+        const textEl = item.querySelector("[data-testimonials-text]");
+        setText(titleEl, name);
+        if (quoteHtml) {
+          setHTML(textEl, quoteHtml);
+        }
+        if (avatarData) {
+          const avatarEl = item.querySelector("[data-testimonials-avatar]");
+          if (avatarEl) {
+            const src = coerceString(avatarData.src);
+            const alt = coerceString(avatarData.alt);
+            if (src) avatarEl.setAttribute("src", src);
+            if (alt) avatarEl.setAttribute("alt", alt);
+          }
+        }
+      });
+    }
   };
 
   const applyResume = (data) => {
@@ -178,11 +250,44 @@
 
   const applyPublications = (data) => {
     const groups = Array.isArray(data?.publications) ? data.publications : [];
-    if (groups.length === 0) return;
-    const firstGroup = groups[0];
-    const yearValue = coerceString(firstGroup.year || firstGroup.value);
     const yearEl = document.querySelector("[data-publication-year]");
-    setText(yearEl, (yearValue || "").trim());
+    if (yearEl && groups.length > 0) {
+      const firstGroup = groups[0];
+      const yearValue = coerceString(firstGroup.year || firstGroup.value);
+      setText(yearEl, (yearValue || "").trim());
+    }
+
+    const listEl = document.querySelector("[data-publication-list]");
+    if (listEl && ensureTemplate("#publication-item-template")) {
+      clearChildren(listEl);
+      groups.forEach((group, groupIndex) => {
+        const items = Array.isArray(group.items) ? group.items : [];
+        items.forEach((pub, itemIndex) => {
+          const node = getTemplateClone("#publication-item-template");
+          if (!node) return;
+          const indexValue = coerceString(pub.index || `${groupIndex + 1}-${itemIndex + 1}`);
+          if (indexValue) {
+            node.dataset.publicationIndex = indexValue;
+          }
+          const linkEl = node.querySelector("[data-publication-link]");
+          const titleText = coerceString(pub.title);
+          const linkHref = coerceString(pub.link);
+          if (linkEl) {
+            if (linkHref) {
+              linkEl.setAttribute("href", linkHref);
+            } else {
+              linkEl.removeAttribute("href");
+            }
+            linkEl.textContent = titleText || linkHref || "";
+          }
+          setHTML(node.querySelector("[data-publication-authors]"), coerceString(pub.authorsHtml));
+          setText(node.querySelector("[data-publication-venue]"), coerceString(pub.venue));
+          setText(node.querySelector("[data-publication-summary]"), coerceString(pub.summary));
+          listEl.appendChild(node);
+        });
+      });
+      return;
+    }
 
     groups.forEach(group => {
       const items = Array.isArray(group.items) ? group.items : [];
@@ -222,15 +327,130 @@
     return container;
   };
 
+  const updatePortfolioFilters = (categories) => {
+    const filterList = document.querySelector("[data-filter-list]");
+    const selectList = document.querySelector("[data-select-list]");
+    const selectValueEl = document.querySelector("[data-selecct-value]");
+    const entries = [["all", "All"], ...Array.from(categories.entries())];
+
+    if (filterList) {
+      clearChildren(filterList);
+      entries.forEach(([key, label], index) => {
+        const li = document.createElement("li");
+        li.className = "filter-item";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("data-filter-btn", "");
+        button.dataset.filterValue = key;
+        button.textContent = label;
+        if (index === 0) {
+          button.classList.add("active");
+        }
+        li.appendChild(button);
+        filterList.appendChild(li);
+      });
+    }
+
+    if (selectList) {
+      clearChildren(selectList);
+      entries.forEach(([key, label]) => {
+        const li = document.createElement("li");
+        li.className = "select-item";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("data-select-item", "");
+        button.dataset.filterValue = key;
+        button.textContent = label;
+        li.appendChild(button);
+        selectList.appendChild(li);
+      });
+    }
+
+    if (selectValueEl && entries.length > 0) {
+      selectValueEl.textContent = entries[0][1];
+    }
+  };
+
   const applyPortfolio = (data) => {
     const projects = Array.isArray(data?.portfolio?.projects) ? data.portfolio.projects : [];
+    const listEl = document.querySelector("[data-project-list]");
+    const categories = new Map();
+
+    if (listEl && ensureTemplate("#project-item-template")) {
+      clearChildren(listEl);
+      projects.forEach((project, idx) => {
+        const item = getTemplateClone("#project-item-template");
+        if (!item) return;
+        const indexValue = coerceString(project.index || idx + 1);
+        if (indexValue) {
+          item.dataset.projectIndex = indexValue;
+        }
+        const card = item.querySelector(".project-card");
+        if (card && indexValue) {
+          card.dataset.projectIndex = indexValue;
+        }
+        const categoryLabel = coerceString(project.category);
+        if (categoryLabel) {
+          const key = categoryLabel.toLowerCase();
+          item.dataset.category = key;
+          const categoryEl = item.querySelector("[data-project-category]");
+          setText(categoryEl, categoryLabel);
+          if (!categories.has(key)) {
+            categories.set(key, categoryLabel);
+          }
+        }
+        const link = coerceString(project.link);
+        if (link) {
+          item.dataset.projectLink = link;
+        }
+        setText(item.querySelector("[data-project-title]"), coerceString(project.title));
+        setHTML(item.querySelector("[data-project-description]"), coerceString(project.descriptionHtml));
+        const thumb = project.thumbnail;
+        if (thumb) {
+          const img = item.querySelector("[data-project-image]");
+          if (img) {
+            const src = coerceString(thumb.src);
+            const alt = coerceString(thumb.alt);
+            if (src) img.setAttribute("src", src);
+            if (alt) img.setAttribute("alt", alt);
+          }
+        }
+        const mediaContainer = ensureProjectMediaContainer(item);
+        const mediaItems = Array.isArray(project.media) ? project.media : [];
+        mediaItems.forEach(media => {
+          const type = coerceString(media.type || "image").toLowerCase();
+          const src = coerceString(media.src);
+          if (!src) return;
+          const placeholder = document.createElement("span");
+          placeholder.dataset.type = type;
+          placeholder.dataset.src = src;
+          const poster = coerceString(media.poster);
+          if (poster) {
+            placeholder.dataset.poster = poster;
+          }
+          const alt = coerceString(media.alt);
+          if (alt) {
+            placeholder.dataset.alt = alt;
+          }
+          mediaContainer.appendChild(placeholder);
+        });
+        listEl.appendChild(item);
+      });
+      updatePortfolioFilters(categories);
+      return;
+    }
+
     projects.forEach(project => {
       const index = coerceString(project.index);
       const item = document.querySelector(`[data-project-index="${index}"]`);
       if (!item) return;
       const category = coerceString(project.category);
       if (category) {
-        item.dataset.category = category.toLowerCase();
+        const key = category.toLowerCase();
+        item.dataset.category = key;
+        if (!categories.has(key)) {
+          categories.set(key, category);
+        }
       }
       const link = coerceString(project.link);
       if (link) {
@@ -278,6 +498,8 @@
         mediaContainer.appendChild(placeholder);
       });
     });
+
+    updatePortfolioFilters(categories);
   };
 
   const applyContact = (data) => {
@@ -328,18 +550,70 @@
     document.dispatchEvent(new Event("site-data-updated"));
   };
 
-  const loadData = () => {
-    fetch(DATA_URL, { cache: "no-cache" })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${DATA_URL}: ${response.status}`);
+  const fetchJson = async (url) => {
+    const response = await fetch(url, { cache: "no-cache" });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}: ${response.status}`);
+    }
+    return response.json();
+  };
+
+  const loadJsonViaIframe = (url) => new Promise((resolve, reject) => {
+    if (!document.body) {
+      reject(new Error("Document body is not available for iframe fallback."));
+      return;
+    }
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.setAttribute("aria-hidden", "true");
+    const cleanup = () => {
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+    };
+    iframe.addEventListener("load", () => {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!doc) throw new Error("Missing iframe document");
+        const text = doc.body ? doc.body.textContent : "";
+        if (!text) throw new Error("Empty response body");
+        const parsed = JSON.parse(text);
+        cleanup();
+        resolve(parsed);
+      } catch (error) {
+        cleanup();
+        reject(error);
+      }
+    });
+    iframe.addEventListener("error", () => {
+      cleanup();
+      reject(new Error(`Failed to load ${url} via iframe`));
+    });
+    iframe.src = url;
+    document.body.appendChild(iframe);
+  });
+
+  const loadData = async () => {
+    try {
+      const payload = await fetchJson(DATA_URL);
+      applyAll(payload);
+      return;
+    } catch (primaryError) {
+      if (window.location.protocol === "file:" && document.body) {
+        try {
+          console.warn(`fetch(${DATA_URL}) failed under file://; attempting iframe fallback.`, primaryError);
+          const payload = await loadJsonViaIframe(DATA_URL);
+          applyAll(payload);
+          return;
+        } catch (fallbackError) {
+          console.error("Iframe fallback for data.json failed", fallbackError);
         }
-        return response.json();
-      })
-      .then(applyAll)
-      .catch(err => {
-        console.error("Unable to load site data", err);
-      });
+      }
+      console.error("Unable to load site data", primaryError);
+      if (window.location.protocol === "file:") {
+        console.error("Tip: Browsers often block fetch() on file URLs. Please run a local HTTP server (e.g. `python -m http.server`) or host the site via HTTP/S.");
+      }
+    }
   };
 
   if (document.readyState === "loading") {
