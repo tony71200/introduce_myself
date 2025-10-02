@@ -227,6 +227,10 @@
           </li>
 
           <li class="navbar-item">
+            <button class="navbar-link" data-nav-link>Certificates</button>
+          </li>
+
+          <li class="navbar-item">
             <button class="navbar-link" data-nav-link>Contact</button>
           </li>
 
@@ -333,53 +337,23 @@
 
         <h3 class="h3 testimonials-title">References</h3>
 
-        <ul class="testimonials-list has-scrollbar">
+        <ul class="testimonials-list has-scrollbar" data-testimonials-list></ul>
 
-          <li class="testimonials-item" data-testimonial-index="1">
-            <div class="content-card" data-testimonials-item>
+        <template id="testimonial-item-template">
+          <li class="testimonials-item" data-testimonial-index>
+            <div class="content-card" data-testimonials-item tabindex="0">
 
               <figure class="testimonials-avatar-box">
-                <img src="./assets/images/jjlien.png" alt="Prof. James Jenn-Jier Lien" width="60" data-testimonials-avatar>
+                <img src="" alt="" width="60" data-testimonials-avatar>
               </figure>
-              <p src="./assets/images/NCKU_Logo.png" alt="quote icon" style="visibility: hidden;" data-testimonials-quote_icon></p>
 
-              <h4 class="h4 testimonials-item-title" data-testimonials-title>Prof. James Jenn-Jier Lien</h4>
+              <h4 class="h4 testimonials-item-title" data-testimonials-title></h4>
 
-              <div class="testimonials-text" data-testimonials-text>
-                <p> 
-                  Robotics Lab, Dept.of CSIE, NCKU.
-                </p>
-                <p> 
-                  <a href="mailto:jjien@csie.ncku.edu.tw" target="_blank" rel="noopener" style="display: inline; color: var(--orange-yellow-crayola);">jjien@csie.ncku.edu.tw</a>
-                </p>
-                <p>
-                  "I had the pleasure of supervising Tony during his Master's at NCKU. He consistently demonstrated strong technical skills, a solid work ethic, and a collaborative spirit. His contributions to our research projects were valuable and impactful. I highly recommend Long for any role in AI or software development."
-                </p>
-              </div>
+              <div class="testimonials-text" data-testimonials-text></div>
 
             </div>
           </li>
-          
-          <li class="testimonials-item" data-testimonial-index="2">
-            <div class="content-card" data-testimonials-item>
-
-              <figure class="testimonials-avatar-box">
-                <img src="./assets/images/lpphu.jpeg" alt="Le Phong Phu" width="60" data-testimonials-avatar>
-              </figure>
-
-              <h4 class="h4 testimonials-item-title" data-testimonials-title>Ph.D Le Phong Phu</h4>
-
-              <div class="testimonials-text" data-testimonials-text>
-                <p>Robotics Lab, Dept.of CSIE, NCKU.</p>
-                <p>
-                  <a href="mailto:Phu210.vn@gmail.com" target="_blank" rel="noopener" style="display: inline; color: var(--orange-yellow-crayola);">Mr Phu</a>
-                </p>
-              </div>
-
-            </div>
-          </li>
-
-        </ul>
+        </template>
 
       </section>
 
@@ -617,25 +591,18 @@
             <h3 class="h3" data-publication-year>2025</h3>
           </div>
 
-          <ol class="timeline-list">
+          <ol class="timeline-list" data-publication-list></ol>
 
-            <li class="timeline-item" style="margin-bottom: 20px;" data-publication-index="1">
+          <template id="publication-item-template">
+            <li class="timeline-item" style="margin-bottom: 20px;" data-publication-index>
               <h4 class="h4" style="margin: 0;" data-publication-title>
-                <!-- TODO: add DOI/URL if available -->
-                <a href="#" target="_blank" style="color: #ffffff; text-decoration: none;" data-publication-link>
-                  3D Interactive Segmentation for Lung Nodule Labeling
-                </a>
+                <a href="#" target="_blank" style="color: #ffffff; text-decoration: none;" data-publication-link></a>
               </h4>
-              <h5 class="h5 timeline-item-title" style="margin: 5px 0; color: #cccccc;" data-publication-authors>
-                Phong-Phu Le, <strong>Thanh-Long Nguyen</strong>, Chao-Chung Chang, Chia-Ying Lin, Yi-Ting Yen, Yau-Lin Tseng, Ching-Ting Tu, Jenn-Jier James Lien
-              </h5>
-              <span data-publication-venue>CVGIP 2025 — August 2025</span>
-              <p class="timeline-text" style="margin-top: 6px;" data-publication-summary>
-                Method: iSegFormer + STCN; mNoC 9.1 @ 85% IoU, 12.4 @ 90% IoU on NCKUH dataset.
-              </p>
+              <h5 class="h5 timeline-item-title" style="margin: 5px 0; color: #cccccc;" data-publication-authors></h5>
+              <span data-publication-venue></span>
+              <p class="timeline-text" style="margin-top: 6px;" data-publication-summary></p>
             </li>
-
-          </ol>
+          </template>
 
         </section>
 
@@ -657,116 +624,32 @@
         <section class="projects">
 
           <!-- Giữ filter như template; items phía dưới thuộc CV/Experience -->
-          <ul class="filter-list">
-            <li class="filter-item"><button class="active" data-filter-btn>All</button></li>
-            <li class="filter-item"><button data-filter-btn>Machine Learning & Deep Learning</button></li>
-            <li class="filter-item"><button data-filter-btn>Computer Vision</button></li>
-            <li class="filter-item"><button data-filter-btn>NLP</button></li>
-          </ul>
+          <ul class="filter-list" data-filter-list></ul>
 
           <div class="filter-select-box">
             <button class="filter-select" data-select>
               <div class="select-value" data-selecct-value>Select category</div>
               <div class="select-icon"><ion-icon name="chevron-down"></ion-icon></div>
             </button>
-            <ul class="select-list">
-              <li class="select-item"><button data-select-item>All</button></li>
-              <li class="select-item"><button data-select-item>Machine Learning & Deep Learning</button></li>
-              <li class="select-item"><button data-select-item>Computer Vision</button></li>
-              <li class="select-item"><button data-select-item>NLP</button></li>
-            </ul>
+            <ul class="select-list" data-select-list></ul>
           </div>
 
-          <ul class="project-list">
+          <ul class="project-list" data-project-list></ul>
 
-            <!-- Computer Vision -->
-            <li class="project-item active" data-filter-item data-category="computer vision" data-project-index="1">
+          <template id="project-item-template">
+            <li class="project-item active" data-filter-item data-category>
               <article class="project-card" data-portfolio-trigger role="button" tabindex="0">
                 <figure class="project-img">
                   <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
-                  <img src="./assets/images/placeholders/no-image-3x4.svg" alt="Wafer Defect Detection" loading="lazy" data-project-image>
+                  <img src="" alt="" loading="lazy" data-project-image>
                 </figure>
-                <h3 class="project-title" data-project-title>Defect Detection in Wafer Manufacturing</h3>
-                <p class="project-category" data-project-category>Computer Vision</p>
-                <div class="project-desc" hidden data-project-description>
-                  <p>Developed visual inspection pipelines for wafer manufacturing lines, including dataset curation and deep learning inference on edge devices.</p>
-                </div>
+                <h3 class="project-title" data-project-title></h3>
+                <p class="project-category" data-project-category></p>
+                <div class="project-desc" hidden data-project-description></div>
+                <div class="project-media" hidden></div>
               </article>
             </li>
-
-            <li class="project-item active" data-filter-item data-category="computer vision" data-project-index="2">
-              <article class="project-card" data-portfolio-trigger role="button" tabindex="0">
-                <figure class="project-img">
-                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
-                  <img src="./assets/images/placeholders/no-image-3x4.svg" alt="C# ONNX Runtime Inference Pipeline" loading="lazy" data-project-image>
-                </figure>
-                <h3 class="project-title" data-project-title>C# ONNX Runtime Inference Pipeline</h3>
-                <p class="project-category" data-project-category>Computer Vision</p>
-                <div class="project-desc" hidden data-project-description>
-                  <p>Optimized ONNX Runtime integration in C# for real-time defect detection and model lifecycle automation.</p>
-                </div>
-              </article>
-            </li>
-
-            <!-- NLP -->
-            <li class="project-item active" data-filter-item data-category="nlp" data-project-index="3">
-              <article class="project-card" data-portfolio-trigger role="button" tabindex="0">
-                <figure class="project-img">
-                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
-                  <img src="./assets/images/RAG.jpeg" alt="Multilingual Docs Chatbot (LangChain)" loading="lazy" data-project-image>
-                </figure>
-                <h3 class="project-title" data-project-title>Multilingual Docs Chatbot (LangChain, RAG)</h3>
-                <p class="project-category" data-project-category>NLP</p>
-                <div class="project-desc" hidden data-project-description>
-                  <p>Retrieval-augmented QA system leveraging LangChain for multilingual corporate documents.</p>
-                </div>
-              </article>
-            </li>
-
-            <!-- ML & DL -->
-            <li class="project-item active" data-filter-item data-category="machine learning & deep learning" data-project-index="4">
-              <article class="project-card" data-portfolio-trigger role="button" tabindex="0">
-                <figure class="project-img">
-                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
-                  <img src="./assets/images/LungProject.jpg" alt="Lung Tumor Detection &amp; 3D Reconstruction" loading="lazy" data-project-image>
-                </figure>
-                <h3 class="project-title" data-project-title>Lung Tumor Detection &amp; 3D Reconstruction</h3>
-                <p class="project-category" data-project-category>Machine Learning &amp; Deep Learning</p>
-                <div class="project-desc" hidden data-project-description>
-                  <p>Deep-learning-assisted tumor detection, segmentation, and 3D reconstruction for surgical planning.</p>
-                </div>
-              </article>
-            </li>
-
-            <li class="project-item active" data-filter-item data-category="computer vision" data-project-link="https://www.instagram.com/p/C0ZKdhdJcqmDK1S-SfBaZJtq2EQvOQGELWf85A0/" data-project-index="5">
-              <article class="project-card" data-portfolio-trigger role="button" tabindex="0">
-                <figure class="project-img">
-                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
-                  <img src="./assets/images/AR.png" alt="Augmented Reality (AR)" loading="lazy" data-project-image>
-                </figure>
-                <h3 class="project-title" data-project-title>Augmented Reality (AR)</h3>
-                <p class="project-category" data-project-category>Computer Vision</p>
-                <div class="project-desc" hidden data-project-description>
-                  <p>Interactive AR experience showcasing marker-based tracking and dynamic content placement.</p>
-                </div>
-              </article>
-            </li>
-
-            <li class="project-item active" data-filter-item data-category="computer vision" data-project-link="https://www.instagram.com/p/CXXlTqGFn3SOCjnTmLrrtJJCrIk0yTY0uka3Sw0/" data-project-index="6">
-              <article class="project-card" data-portfolio-trigger role="button" tabindex="0">
-                <figure class="project-img">
-                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
-                  <img src="./assets/images/AR2.jpg" alt="Augmented Reality (AR)" loading="lazy" data-project-image>
-                </figure>
-                <h3 class="project-title" data-project-title>Augmented Reality (AR)</h3>
-                <p class="project-category" data-project-category>Computer Vision</p>
-                <div class="project-desc" hidden data-project-description>
-                  <p>Advanced AR prototype with animated overlays and real-world occlusion handling.</p>
-                </div>
-              </article>
-            </li>
-
-          </ul>
+          </template>
 
         </section>
 
@@ -790,6 +673,53 @@
         </div>
 
 
+      </article>
+
+      <!--
+        - #CERTIFICATES
+      -->
+      <article class="certificates" data-page="certificates">
+
+        <header>
+          <h2 class="h2 article-title">Certificates</h2>
+        </header>
+
+        <section class="certificates-list">
+          <ul class="certificates-grid" data-certificates-list></ul>
+
+          <template id="certificate-item-template">
+            <li class="certificate-item active" data-filter-item data-category>
+              <article class="certificate-card" data-certificate-trigger role="button" tabindex="0">
+                <figure class="certificate-img">
+                  <div class="certificate-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                  <img src="" alt="" loading="lazy" data-certificate-image>
+                </figure>
+                <h3 class="certificate-title" data-certificate-title></h3>
+                <p class="certificate-category" data-certificate-category></p>
+                <div class="certificate-desc" hidden data-certificate-description></div>
+                
+              </article>
+            </li>
+          </template>
+        </section>
+
+        <!-- #CERTIFICATE MODAL (Gallery) -->
+         <div class="modal-container" data-certificate-modal-container>
+          <div class="overlay" data-certificate-overlay></div>
+          <section class="certificate-modal">
+            <button class="modal-close-btn" data-certificate-modal-close-btn>
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+            <div class="modal-content">
+              <h4 class="h3 modal-title" data-certificate-modal-title>Certificate Title</h4>
+              <div class="certificate-modal-media">
+                <div class="media-main" data-certificate-modal-main></div>
+              </div>
+              <div class="certificate-modal-desc" data-certificate-modal-desc></div>
+            </div>
+          </section>
+        </div>
       </article>
 
 
@@ -861,7 +791,7 @@
   <!--
     - custom js link
   -->
-  <script src="./assets/js/update.js"></script>
+  <script src="./assets/js/update.js" data-json-url="./data.json"></script>
   <script src="./assets/js/script.js"></script>
 
   <!--
