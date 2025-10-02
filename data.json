@@ -328,22 +328,23 @@
       {
         "index": 1,
         "title": "C++ For C Programmers",
-        "from": "Coursera - deeplearning.ai",
+        "from": "Coursera - DeepLearning.AI",
+        "descriptionHtml": "<p>Coverage of modern C++ constructs such as STL containers, iterators, and graph algorithms tailored for students with a C background.</p>",
         "image": {
           "src": "./assets/images/certificate_Cpp.jpg",
-          "alt": "C++ For C Programmers"
+          "alt": "Certificate - C++ For C Programmers"
         }
       },
       {
         "index": 2,
         "title": "Machine Learning with Python",
         "from": "Coursera - IBM",
+        "descriptionHtml": "<p>Hands-on labs with scikit-learn covering supervised and unsupervised learning, model evaluation, and deployment basics.</p>",
         "image": {
           "src": "./assets/images/placeholders/no-image-3x4.svg",
-          "alt": "Machine Learning with Python"
+          "alt": "Certificate - Machine Learning with Python"
         }
       }
-      
     ]
   },
   "contact": {

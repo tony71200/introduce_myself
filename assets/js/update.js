@@ -505,131 +505,67 @@
 
 
   const applyCertificates = (data) => {
-    const forms = Array.isArray(data?.certificate?.forms) ? data.certificate.forms : [];
-    const listEl = document.querySelector("[data-certificate-list]");
-    const categories = new Map();
+    const forms = Array.isArray(data?.certificates?.forms) ? data.certificates.forms : [];
+    const listEl = document.querySelector("[data-certificates-list]");
 
-    if (listEl && ensureTemplate("#certificate-item-template")) {
-      clearChildren(listEl);
-      forms.forEach((form, idx) => {
-        const item = getTemplateClone("#certificate-item-template");
-        if (!item) return;
-        const indexValue = coerceString(form.index || idx + 1);
-        if (indexValue) {
-          item.dataset.projectIndex = indexValue;
-        }
-        const card = item.querySelector(".certificate-card");
-        if (card && indexValue) {
-          card.dataset.projectIndex = indexValue;
-        }
-        const categoryLabel = coerceString(form.category);
-        if (categoryLabel) {
-          const key = categoryLabel.toLowerCase();
-          item.dataset.category = key;
-          const categoryEl = item.querySelector("[data-certificate-category]");
-          setText(categoryEl, categoryLabel);
-          if (!categories.has(key)) {
-            categories.set(key, categoryLabel);
-          }
-        }
-        
-        setText(item.querySelector("[data-certicate-title]"), coerceString(form.title));
-        setHTML(item.querySelector("[data-certificate-description]"), coerceString(form.descriptionHtml));
-        const thumb = form.thumbnail;
-        if (thumb) {
-          const img = item.querySelector("[data-certificate-image]");
-          if (img) {
-            const src = coerceString(thumb.src);
-            const alt = coerceString(thumb.alt);
-            if (src) img.setAttribute("src", src);
-            if (alt) img.setAttribute("alt", alt);
-          }
-        }
-        const mediaContainer = ensureProjectMediaContainer(item);
-        const mediaItems = Array.isArray(project.media) ? project.media : [];
-        mediaItems.forEach(media => {
-          const type = coerceString(media.type || "image").toLowerCase();
-          const src = coerceString(media.src);
-          if (!src) return;
-          const placeholder = document.createElement("span");
-          placeholder.dataset.type = type;
-          placeholder.dataset.src = src;
-          const poster = coerceString(media.poster);
-          if (poster) {
-            placeholder.dataset.poster = poster;
-          }
-          const alt = coerceString(media.alt);
-          if (alt) {
-            placeholder.dataset.alt = alt;
-          }
-          mediaContainer.appendChild(placeholder);
-        });
-        listEl.appendChild(item);
-      });
-      updatePortfolioFilters(categories);
-      return;
-    }
+    if (!listEl || !ensureTemplate("#certificate-item-template")) return;
 
-    projects.forEach(project => {
-      const index = coerceString(project.index);
-      const item = document.querySelector(`[data-project-index="${index}"]`);
+    clearChildren(listEl);
+
+    forms.forEach((form, idx) => {
+      const item = getTemplateClone("#certificate-item-template");
       if (!item) return;
-      const category = coerceString(project.category);
-      if (category) {
-        const key = category.toLowerCase();
-        item.dataset.category = key;
-        if (!categories.has(key)) {
-          categories.set(key, category);
-        }
+
+      const indexValue = coerceString(form.index || idx + 1);
+      if (indexValue) {
+        item.dataset.certificateIndex = indexValue;
       }
-      const link = coerceString(project.link);
+
+      const card = item.querySelector(".certificate-card");
+      if (card && indexValue) {
+        card.dataset.certificateIndex = indexValue;
+      }
+
+      const link = coerceString(form.link);
       if (link) {
-        item.dataset.projectLink = link;
-      } else {
-        delete item.dataset.projectLink;
+        item.dataset.certificateLink = link;
       }
-      const title = coerceString(project.title);
-      setText(item.querySelector("[data-project-title]"), title);
-      const categoryEl = item.querySelector("[data-project-category]");
-      if (categoryEl) {
-        const existing = categoryEl.textContent || "";
-        const nextValue = category || existing;
-        setText(categoryEl, nextValue);
-      }
-      setHTML(item.querySelector("[data-project-description]"), coerceString(project.descriptionHtml));
-      const thumb = project.thumbnail;
-      if (thumb) {
-        const img = item.querySelector("[data-project-image]");
-        if (img) {
-          const src = coerceString(thumb.src);
-          const alt = coerceString(thumb.alt);
-          if (src) img.setAttribute("src", src);
-          if (alt) img.setAttribute("alt", alt);
+
+      const title = coerceString(form.title);
+      setText(item.querySelector("[data-certificate-title]"), title);
+
+      const issuer = coerceString(form.from || form.category);
+      setText(item.querySelector("[data-certificate-category]"), issuer);
+
+      setHTML(item.querySelector("[data-certificate-description]"), coerceString(form.descriptionHtml));
+
+      const image = form?.image || form?.thumbnail || {};
+      const imgEl = item.querySelector("[data-certificate-image]");
+      const src = coerceString(image.src);
+      const alt = coerceString(image.alt) || title || "Certificate";
+
+      if (imgEl) {
+        if (src) {
+          imgEl.setAttribute("src", src);
+          item.dataset.certificateSrc = src;
+          if (card) {
+            card.dataset.certificateSrc = src;
+          }
         }
       }
 
-      const mediaContainer = ensureProjectMediaContainer(item);
-      const mediaItems = Array.isArray(project.media) ? project.media : [];
-      mediaItems.forEach(media => {
-        const type = coerceString(media.type || "image").toLowerCase();
-        const src = coerceString(media.src);
-        if (!src) return;
-        const placeholder = document.createElement("span");
-        placeholder.dataset.type = type;
-        placeholder.dataset.src = src;
-        const poster = coerceString(media.poster);
-        if (poster) {
-          placeholder.dataset.poster = poster;
+      if (alt) {
+        if (imgEl) {
+          imgEl.setAttribute("alt", alt);
         }
-        const alt = coerceString(media.alt);
-        if (alt) {
-          placeholder.dataset.alt = alt;
+        item.dataset.certificateAlt = alt;
+        if (card) {
+          card.dataset.certificateAlt = alt;
         }
-        mediaContainer.appendChild(placeholder);
-      });
+      }
+
+      listEl.appendChild(item);
     });
-
-    updatePortfolioFilters(categories);
   };
 
   const applyContact = (data) => {
