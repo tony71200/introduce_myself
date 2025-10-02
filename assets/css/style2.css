@@ -2109,3 +2109,65 @@ body {
     flex-direction: column;
   }
 }
+
+/* Certificate modal mirrors the portfolio presentation but without thumbnail rail */
+.certificate-modal {
+  position: relative;
+  background: var(--eerie-black-2);
+  border: 1px solid var(--jet);
+  border-radius: 20px;
+  padding: 20px;
+  width: 95%;
+  max-width: 980px;
+  box-shadow: var(--shadow-5);
+  transform: scale(1.2);
+  opacity: 0;
+  transition: var(--transition-1);
+  z-index: 2;
+}
+
+.modal-container.active .certificate-modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.certificate-modal .modal-title {
+  margin-bottom: 12px;
+}
+
+.certificate-modal .certificate-modal-media {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.certificate-modal .media-main {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--onyx);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.certificate-modal .media-main img,
+.certificate-modal .media-main video {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+.certificate-modal-desc {
+  margin-top: 8px;
+  color: var(--light-gray);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .certificate-modal .certificate-modal-media {
+    flex-direction: column;
+  }
+}

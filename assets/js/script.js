@@ -217,17 +217,20 @@ const togglePortfolioModal = () => {
 };
 
 // Build media element (image or video)
-function buildMediaEl(type, src) {
+function buildMediaEl(type, src, altText) {
   if (type === "video") {
     const v = document.createElement("video");
     v.src = src;
     v.controls = true;
     v.playsInline = true;
+    if (altText) {
+      v.setAttribute("aria-label", altText);
+    }
     return v;
   } else {
     const img = document.createElement("img");
     img.src = src;
-    img.alt = "project media";
+    img.alt = altText || "project media";
     img.loading = "lazy";
     return img;
   }
@@ -251,8 +254,7 @@ function renderPortfolioGallery(title, desc, mediaList) {
 
   // set main
   const first = mediaList[0];
-  portfolioModalMain.appendChild(buildMediaEl(first.type, first.src));
-
+  portfolioModalMain.appendChild(buildMediaEl(first.type, first.src, first.alt));
   // thumbs
   mediaList.forEach((m, idx) => {
     const li = document.createElement("li");
@@ -260,12 +262,12 @@ function renderPortfolioGallery(title, desc, mediaList) {
     btn.setAttribute("type", "button");
     btn.addEventListener("click", () => {
       portfolioModalMain.innerHTML = "";
-      portfolioModalMain.appendChild(buildMediaEl(m.type, m.src));
+      portfolioModalMain.appendChild(buildMediaEl(m.type, m.src, m.alt));
     });
     if (m.type === "image") {
       const thumb = document.createElement("img");
       thumb.src = m.src;
-      thumb.alt = "thumb";
+      thumb.alt = m.alt || "thumb";
       btn.appendChild(thumb);
     } else {
       // simple placeholder for video thumb: use <img> if poster available later
@@ -285,14 +287,21 @@ function extractMediaFromProject(projectItem) {
   const img = projectItem.querySelector(".project-img img");
   if (img && img.getAttribute("src")) {
     const src = img.getAttribute("src").trim();
-    if (src) media.push({ type: "image", src });
+    if (src) media.push({ type: "image", src, alt: img.getAttribute("alt") || "" });
   }
   // 2) Read hidden extras: .project-media > [data-type][data-src]
   const extras = projectItem.querySelectorAll(".project-media [data-src]");
   extras.forEach(el => {
     const type = (el.getAttribute("data-type") || "image").toLowerCase();
     const src = el.getAttribute("data-src") || "";
-    if (src) media.push({ type, src });
+    if (src) {
+      media.push({
+        type,
+        src,
+        alt: el.getAttribute("data-alt") || "",
+        poster: el.getAttribute("data-poster") || ""
+      });
+    }
   });
   return media;
 }
@@ -370,11 +379,17 @@ function renderCertificateGallery(title, desc, media) {
 
   // set main
   const first = media;
-  certificateModalMain.appendChild(buildMediaEl(first.type, first.src));
+  if (!first || !first.src) {
+    const empty = document.createElement("div");
+    empty.textContent = "No media available for this certificate.";
+    certificateModalMain.appendChild(empty);
+    return;
+  }
+
+  certificateModalMain.appendChild(buildMediaEl(first.type || "image", first.src, first.alt));
 }
 
-const certificateList = document.querySelector("[data-certificate-list]") || document.querySelector(".certificates .certificate-list");
-
+const certificateList = document.querySelector("[data-certificates-list]");
 const activateCertificates = (item, ev) => {
   if (ev) {
     ev.preventDefault();
@@ -391,11 +406,15 @@ const activateCertificates = (item, ev) => {
   const title = titleEl ? titleEl.textContent.trim() : "Certificate";
   const desc = descEl ? descEl.innerHTML : "";
 
-  renderCertificateGallery(title, desc, { type: "image", src: item.dataset.certificateSrc });
+  renderCertificateGallery(title, desc, {
+    type: "image",
+    src: item.dataset.certificateSrc,
+    alt: item.dataset.certificateAlt
+  });
   toggleCertificateModal();
 };
 
-if (certificateList) {
+if (certificateList && certificateModalContainer && certificateOverlay && certificateCloseBtn) {
   certificateList.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-certificate-trigger]");
     if (!trigger) return;
@@ -412,8 +431,7 @@ if (certificateList) {
     if (!item) return;
     activateCertificates(item, event);
   });
+  // Close handlers
+  certificateCloseBtn.addEventListener("click", toggleCertificateModal);
+  certificateOverlay.addEventListener("click", toggleCertificateModal);
 }
-
-// Close handlers
-certificateCloseBtn.addEventListener("click", toggleCertificateModal);
-certificateOverlay.addEventListener("click", toggleCertificateModal);
