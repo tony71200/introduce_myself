@@ -1022,13 +1022,13 @@ main {
 .project-card:hover img,
 .project-card:focus-visible img { transform: scale(1.1); }
 
-.project-title,
+.project-title .certificate-title ,
 .project-category { margin-left: 10px; }
 
-.project-title {
+.project-title .certificate-title {
   color: var(--white-2);
   font-size: var(--fs-5);
-  font-weight: var(--fw-400);
+  font-weight: var(--fw-400); 
   text-transform: capitalize;
   line-height: 1.3;
 }

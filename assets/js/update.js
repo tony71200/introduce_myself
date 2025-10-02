@@ -506,6 +506,7 @@
 
   const applyCertificates = (data) => {
     const forms = Array.isArray(data?.certificates?.forms) ? data.certificates.forms : [];
+    console.log("Applying certificates", forms);
     const listEl = document.querySelector("[data-certificates-list]");
 
     if (!listEl || !ensureTemplate("#certificate-item-template")) return;
