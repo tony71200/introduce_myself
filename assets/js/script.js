@@ -344,3 +344,76 @@ if (projectList) {
 // Close handlers
 portfolioCloseBtn.addEventListener("click", togglePortfolioModal);
 portfolioOverlay.addEventListener("click", togglePortfolioModal);
+
+/* ========= Certificate Modal (Gallery) ========= */
+
+const certificateModalContainer = document.querySelector("[data-certificate-modal-container]");
+const certificateOverlay = document.querySelector("[data-certificate-overlay]");
+const certificateCloseBtn = document.querySelector("[data-certificate-modal-close-btn]");
+const certificateModalTitle = document.querySelector("[data-certificate-modal-title]");
+const certificateModalMain = document.querySelector("[data-certificate-modal-main]");
+const certificateModalDesc = document.querySelector("[data-certificate-modal-desc]");
+
+// helper: open/close
+const toggleCertificateModal = () => {
+  certificateModalContainer.classList.toggle("active");
+  certificateOverlay.classList.toggle("active");
+};
+
+// Render gallery into modal
+function renderCertificateGallery(title, desc, media) {
+  certificateModalTitle.textContent = title || "Project";
+  certificateModalDesc.innerHTML = desc || "";
+
+  // clear containers
+  certificateModalMain.innerHTML = "";
+
+  // set main
+  const first = media;
+  certificateModalMain.appendChild(buildMediaEl(first.type, first.src));
+}
+
+const certificateList = document.querySelector("[data-certificate-list]") || document.querySelector(".certificates .certificate-list");
+
+const activateCertificates = (item, ev) => {
+  if (ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
+
+  const link = item.dataset.certificateLink;
+  if (link) {
+    window.open(link, "_blank", "noopener");
+  }
+
+  const titleEl = item.querySelector(".certificate-title");
+  const descEl = item.querySelector(".certificate-desc");
+  const title = titleEl ? titleEl.textContent.trim() : "Certificate";
+  const desc = descEl ? descEl.innerHTML : "";
+
+  renderCertificateGallery(title, desc, { type: "image", src: item.dataset.certificateSrc });
+  toggleCertificateModal();
+};
+
+if (certificateList) {
+  certificateList.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-certificate-trigger]");
+    if (!trigger) return;
+    const item = trigger.closest(".certificate-item");
+    if (!item) return;
+    activateCertificates(item, event);
+  });
+
+  certificateList.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const trigger = event.target.closest("[data-certificate-trigger]");
+    if (!trigger) return;
+    const item = trigger.closest(".certificate-item");
+    if (!item) return;
+    activateCertificates(item, event);
+  });
+}
+
+// Close handlers
+certificateCloseBtn.addEventListener("click", toggleCertificateModal);
+certificateOverlay.addEventListener("click", toggleCertificateModal);

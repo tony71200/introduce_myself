@@ -227,6 +227,10 @@
           </li>
 
           <li class="navbar-item">
+            <button class="navbar-link" data-nav-link>Certificates</button>
+          </li>
+
+          <li class="navbar-item">
             <button class="navbar-link" data-nav-link>Contact</button>
           </li>
 
@@ -669,6 +673,53 @@
         </div>
 
 
+      </article>
+
+      <!--
+        - #CERTIFICATES
+      -->
+      <article class="certificates" data-page="certificates">
+
+        <header>
+          <h2 class="h2 article-title">Certificates</h2>
+        </header>
+
+        <section class="certificates-list">
+          <ul class="certificates-grid" data-certificates-list></ul>
+
+          <template id="certificate-item-template">
+            <li class="certificate-item active" data-filter-item data-category>
+              <article class="certificate-card" data-certificate-trigger role="button" tabindex="0">
+                <figure class="certificate-img">
+                  <div class="certificate-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                  <img src="" alt="" loading="lazy" data-certificate-image>
+                </figure>
+                <h3 class="certificate-title" data-certificate-title></h3>
+                <p class="certificate-category" data-certificate-category></p>
+                <div class="certificate-desc" hidden data-certificate-description></div>
+                
+              </article>
+            </li>
+          </template>
+        </section>
+
+        <!-- #CERTIFICATE MODAL (Gallery) -->
+         <div class="modal-container" data-certificate-modal-container>
+          <div class="overlay" data-certificate-overlay></div>
+          <section class="certificate-modal">
+            <button class="modal-close-btn" data-certificate-modal-close-btn>
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+            <div class="modal-content">
+              <h4 class="h3 modal-title" data-certificate-modal-title>Certificate Title</h4>
+              <div class="certificate-modal-media">
+                <div class="media-main" data-certificate-modal-main></div>
+              </div>
+              <div class="certificate-modal-desc" data-certificate-modal-desc></div>
+            </div>
+          </section>
+        </div>
       </article>
 
 

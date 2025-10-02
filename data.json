@@ -175,7 +175,7 @@
         "category": "Computer Vision",
         "title": "Defect Detection in Wafer Manufacturing",
         "thumbnail": {
-          "src": "./assets/images/placeholders/no-image-3x4.svg",
+          "src": "./assets/images/DetectError.png",
           "alt": "Wafer Defect Detection"
         },
         "descriptionHtml": "<p>Developed visual inspection pipelines for wafer manufacturing lines, including dataset curation and deep learning inference on edge devices.</p>",
@@ -184,9 +184,9 @@
       {
         "index": 2,
         "category": "Computer Vision",
-        "title": "C# ONNX Runtime Inference Pipeline",
+        "title": "C# ONNX Runtime Inference Pipeline and Robotic Control",
         "thumbnail": {
-          "src": "./assets/images/placeholders/no-image-3x4.svg",
+          "src": "./assets/images/Robotic.jpg",
           "alt": "C# ONNX Runtime Inference Pipeline"
         },
         "descriptionHtml": "<p>Optimized ONNX Runtime integration in C# for real-time defect detection and model lifecycle automation.</p>",
@@ -215,13 +215,13 @@
         "media": [
           {
             "type": "image",
-            "src": "./assets/images/RAG.jpeg",
-            "alt": "RAG"
-          },
-          {
-            "type": "image",
             "src": "./assets/images/PDFGPT.jpg",
             "alt": "PDFGPT"
+          },
+          {
+            "type": "video",
+            "src": "./assets/images/DemoVideo_PDFGPT_240528.mp4",
+            "alt": "PDFGPT2"
           }
         ]
       },
@@ -237,11 +237,6 @@
         "media": [
           {
             "type": "image",
-            "src": "./assets/images/LungProject.jpg",
-            "alt": "application1"
-          },
-          {
-            "type": "image",
             "src": "./assets/images/LungCancer2.jpg",
             "alt": "application2"
           },
@@ -249,6 +244,11 @@
             "type": "image",
             "src": "./assets/images/LungCancer3.jpg",
             "alt": "application3"
+          },
+          {
+            "type": "image",
+            "src": "./assets/images/LungProject3.jpg",
+            "alt": "application4"
           }
         ]
       },
@@ -289,7 +289,7 @@
       },
       {
         "index": 8,
-        "category": "Computer Vision",
+        "category": "Machine Learning & Deep Learning",
         "title": "Label and Training Application",
         "thumbnail": {
           "src": "./assets/images/LabelTrainingApp.png",
@@ -299,11 +299,6 @@
         "media": [
           {
             "type": "image",
-            "src": "./assets/images/LabelTrainingApp.png",
-            "alt": "Label Training Application"
-          },
-          {
-            "type": "image",
             "src": "./assets/images/LabelTrainingApp2.png",
             "alt": "Label Training Application 2"
           }
@@ -311,7 +306,7 @@
       },
       {
         "index": 9,
-        "category": "Computer Vision",
+        "category": "Machine Learning & Deep Learning",
         "title": "Stopper Detection in C# ONNX Runtime",
         "thumbnail": {
           "src": "./assets/images/stopperdetection.png",
@@ -321,16 +316,34 @@
         "media": [
           {
             "type": "image",
-            "src": "./assets/images/stopperdetection.png",
-            "alt": "Stopper Detection"
-          },
-          {
-            "type": "image",
             "src": "./assets/images/StopperDetection2.png",
             "alt": "Stopper Detection 2"
           }
         ]
       }
+    ]
+  },
+  "certificates": {
+    "forms": [
+      {
+        "index": 1,
+        "title": "C++ For C Programmers",
+        "from": "Coursera - deeplearning.ai",
+        "image": {
+          "src": "./assets/images/certificate_Cpp.jpg",
+          "alt": "C++ For C Programmers"
+        }
+      },
+      {
+        "index": 2,
+        "title": "Machine Learning with Python",
+        "from": "Coursera - IBM",
+        "image": {
+          "src": "./assets/images/placeholders/no-image-3x4.svg",
+          "alt": "Machine Learning with Python"
+        }
+      }
+      
     ]
   },
   "contact": {
