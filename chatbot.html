@@ -1,0 +1,40 @@
+<div class="chatbot" data-chatbot>
+    <button class="chatbot-toggle" type="button" data-chatbot-toggle aria-label ="Toggle Chatbot">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        <!-- <span class="chatbot-icon">💬</span> -->
+    </button>
+
+    <section class="chatbot-window" data-chatbot-window hidden>
+        <header class="chatbot-header">
+            <div class="chatbot-header__title">
+                <ion-icon name="sparkles-outline" aria-hidden=""true></ion-icon>
+                <p> Assistant</p>
+            </div>>
+            <button class="chatbot-close" type="button" data-chatbot-close aria-label="Close Chatbot">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </header>
+
+        <div class="chatbot-status" data-chatbot-status> Initializing connection...</div>
+        <div class="chatbot-messages" data-chatbot-messages>
+            <div class="chatbot-message chatbot-message--bot">
+                <p> Hello. I am Long Chatbot. You can ask me the information about Long (Tony). I will answer if I have</p>>
+            </div>
+        </div>
+
+        <form class="chatbot-form" data-chatbot-form>
+            <input 
+            class="chatbot-input" 
+            type="text" 
+            data-chatbot-input 
+            placeholder="Type your message..." 
+            aria-label="Type your message..." 
+            name="chatbot-message"
+            autocomplete="off"
+            disabled>
+            <button class="chatbot-send" type="submit" data-chatbot-send aria-label="Send Message" disabled>
+                <ion-icon name="send"></ion-icon>
+            </button>
+        </form>
+    </section>
+</div>
