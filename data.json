@@ -328,7 +328,7 @@
       {
         "index": 1,
         "title": "C++ For C Programmers",
-        "from": "Coursera - DeepLearning.AI",
+        "from": "Sololearn",
         "descriptionHtml": "<p>Coverage of modern C++ constructs such as STL containers, iterators, and graph algorithms tailored for students with a C background.</p>",
         "image": {
           "src": "./assets/images/certificate_Cpp.jpg",
