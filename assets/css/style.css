@@ -161,6 +161,7 @@ article {
   border-radius: 20px;
   padding: 15px;
   box-shadow: var(--shadow-1);
+  width: 100%;
   z-index: 1;
 }
 
@@ -294,6 +295,12 @@ main {
   margin-bottom: 75px;
   min-width: 259px;
   height: max-content;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 
@@ -1041,6 +1048,67 @@ main {
   font-weight: var(--fw-300);
 }
 
+.certificates-list { margin-top: 24px; }
+
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.certificates .certificate-card {
+  position: relative;
+  height: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--border-gradient-onyx);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-2);
+}
+
+.certificates .certificate-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 16px;
+  background: var(--eerie-black-1);
+  z-index: -1;
+}
+
+.certificates .project-img {
+  aspect-ratio: 4 / 3;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+.certificates .project-img img {
+  object-fit: contain;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.certificates .project-item-icon-box {
+  padding: 12px;
+  font-size: 18px;
+}
+
+.certificates .certificate-title {
+  font-size: var(--fs-5);
+  margin-bottom: 6px;
+}
+
+.certificates .certificate-category {
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+}
+
+.certificates :is(.project-title, .project-category) {
+  margin-left: 0;
+}
+
 
 
 
@@ -1326,10 +1394,10 @@ textarea.form-input::-webkit-resizer { display: none; }
    */
 
   .sidebar, article {
-    width: 520px;
+    max-width: 520px;
+    width: 100%;
     margin-inline: auto;
     padding: 30px;
-    max-height: 786px;
   }
   /* .sidebar-info_more {
     display: flex;
@@ -1622,7 +1690,10 @@ textarea.form-input::-webkit-resizer { display: none; }
    * REUSED STYLE
    */
 
-  .sidebar, article { width: 700px; }
+  .sidebar, article {
+    max-width: 700px;
+    width: 100%;
+  }
 
   .has-scrollbar::-webkit-scrollbar-button { width: 100px; }
 
@@ -1646,6 +1717,10 @@ textarea.form-input::-webkit-resizer { display: none; }
    */
 
   .navbar-link { --fs-8: 15px; }
+
+  .certificates-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
 
 
 
@@ -1744,7 +1819,8 @@ textarea.form-input::-webkit-resizer { display: none; }
    */
 
   .sidebar, article {
-    width: 950px;
+    max-width: 950px;
+    width: 100%;
     box-shadow: var(--shadow-5);
   }
 
@@ -1758,8 +1834,10 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .main-content {
     position: relative;
-    width: max-content;
-    margin: auto;
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    padding-top: 110px;
   }
 
 
@@ -1816,6 +1894,10 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .project-list { grid-template-columns: repeat(3, 1fr); }
 
+  .certificates-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
 
 
   /**
@@ -1862,7 +1944,10 @@ textarea.form-input::-webkit-resizer { display: none; }
    * REUSED STYLE
    */
 
-  .sidebar, article { width: auto; }
+  .sidebar, article {
+    max-width: none;
+    width: 100%;
+  }
 
   article { min-height: 100%; }
 
@@ -1875,15 +1960,15 @@ textarea.form-input::-webkit-resizer { display: none; }
   main {
     max-width: 1200px;
     margin-inline: auto;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    gap: 25px;
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    align-items: start;
+    gap: 30px;
   }
 
   .main-content {
-    min-width: 75%;
-    width: 75%;
+    width: 100%;
+    max-width: none;
     margin: 0;
   }
 
@@ -1895,11 +1980,11 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .sidebar {
     position: sticky;
-    top: 60px;
+    top: 48px;
     max-height: max-content;
-    height: 100%;
+    height: auto;
     margin-bottom: 0;
-    padding-top: 60px;
+    padding-top: 32px;
     z-index: 1;
   }
 
