@@ -2,7 +2,7 @@ import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers
 // Chatbot implementation using Hugging Face Transformers.js
 // Model: https://huggingface.co/gpt2
 
-env.allowLocalModels = false; // Allow loading local models
+env.allowLocalModels = true; // Allow loading local models
 env.useBrowserCache = true; // Enable browser cache for models
 // env.cacheSize = 100 * 1024 * 1024; // 100 MB cache size
 
@@ -65,6 +65,7 @@ async function initChatbot(container) {
             inputEl.disabled = false;
             sendButton.disabled = false;
             inputEl.focus();
+            sendButton.focus();
         },
         onError: (error) => {
             appendMessage(messagesEl, error, 'bot');
@@ -103,12 +104,13 @@ function setupToggle(toggleButton, closeButton, windowEl) {
 
     const closeWindow = () => {
         windowEl.setAttribute('hidden', '');
-        toggleButton.setAttribute('aria-expanded', 'false');
+        toggleButton.setAttribute('aria-hidden', 'false');
+        
     };
 
     const openWindow = () => {
         windowEl.removeAttribute('hidden');
-        toggleButton.setAttribute('aria-expanded', 'true');
+        toggleButton.setAttribute('aria-hidden', 'true');
     };
 
     toggleButton.addEventListener('click', () => {
@@ -132,7 +134,7 @@ function appendMessage(messagesEl, text, role, options = {}) {
 
     const bubble = document.createElement('div');
     bubble.classList.add('chatbot-message');
-    bubble.classList.add(role === 'user' ? 'chatbot-message-user' : 'chatbot-message-bot');
+    bubble.classList.add(role === 'user' ? 'chatbot-message--user' : 'chatbot-message--bot');
 
     const paragraph = document.createElement('p');
     paragraph.textContent = normalizeText(text);
@@ -220,6 +222,7 @@ function createRagEngine({ statusEl, onReady, onError }) {
                 return 'I am still warming up. Please wait a moment!'
             }
             const cleanedQuestion = normalizeText(question).trim();
+            console.log('User question:', cleanedQuestion);
             if (!cleanedQuestion) {
                 return 'You can enter questions related to Long for my support!';
             }
@@ -242,7 +245,7 @@ function createRagEngine({ statusEl, onReady, onError }) {
                 return "Sorry, I don't have the information to answer that question based on the current profile.";
             }
 
-            return buildAnswer(cleanedQuestion, relevantMatches);
+            return buildAnswer(relevantMatches);
         }
     };
 }
@@ -386,7 +389,7 @@ function rankBySimilarity(queryEmbedding, knowledgeBase) {
     .sort((a, b) => b.similarity - a.similarity);
 }
 
-function buildAnswer(question, matches) {
+function buildAnswer(matches) {
     if (!matches.length) {
         return '';
     }
@@ -397,7 +400,7 @@ function buildAnswer(question, matches) {
     const confidence = Math.max(...matches.map((match) => match.similarity ?? 0));
 
     const viParagraphs = [];
-    viParagraphs.push(`🇻🇳 Trả lời cho câu hỏi "${question}":`);
+    // viParagraphs.push(`🇻🇳 Trả lời cho câu hỏi "${question}":`);
     viParagraphs.push(topMatch.summary);
     if (additionalMatches.length) {
         const details = additionalMatches
@@ -411,8 +414,8 @@ function buildAnswer(question, matches) {
     viParagraphs.push(`Độ tin cậy ước tính: ${(confidence * 100).toFixed(0)}%.`);
 
     const enParagraphs = [];
-    const englishQuestion = formatSummaryForLanguage(question, 'en');
-    enParagraphs.push(`🇬🇧 Answer for "${englishQuestion}":`);
+    // const englishQuestion = formatSummaryForLanguage(question, 'en');
+    // enParagraphs.push(`🇬🇧 Answer for "${englishQuestion}":`);
     enParagraphs.push(formatSummaryForLanguage(topMatch.summary, 'en'));
     if (additionalMatches.length) {
         const details = additionalMatches
@@ -431,7 +434,7 @@ function buildAnswer(question, matches) {
 function normalizeText(text) {
     if (text == null) return '';
     const stringValue = typeof text === 'string' ? text : String(text);
-    const normalized = stringValue.normalize('NFC');
+    const normalized = stringValue.normalize('NFKC');
     const decoded = textDecoder.decode(textEncoder.encode(normalized));
     return decoded.replace(/\r\n/g, '\n').replace(/\u00A0/g, ' ').trim();
 }
